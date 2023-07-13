@@ -1,60 +1,76 @@
-local NotificationLibrary = {}
+local function createNotificationLibrary()
+local function createNotificationLibrary()
+    -- Notification Library
 
--- Tweening service
-local TweenService = game:GetService("TweenService")
+    local NotificationLibrary = {}
 
--- Create a new notification
-function NotificationLibrary:CreateNotification(title, message, duration)
-    local notificationScreenGui = Instance.new("ScreenGui")
-    notificationScreenGui.Name = "NotificationScreenGui"
-    notificationScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    -- Tweening service
+    local TweenService = game:GetService("TweenService")
 
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 300, 0, 100)
-    frame.Position = UDim2.new(0.5, -150, 0, -100)
-    frame.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
-    frame.BorderSizePixel = 0
-    frame.Parent = notificationScreenGui
+    -- Create a new notification
+    function NotificationLibrary:CreateNotification(title, message, duration)
+        local notificationScreenGui = Instance.new("ScreenGui")
+        notificationScreenGui.Name = "NotificationScreenGui"
+        notificationScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, 0, 0.5, 0)
-    titleLabel.Position = UDim2.new(0, 0, 0, 0)
-    titleLabel.Text = title
-    titleLabel.TextSize = 18
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Font = Enum.Font.SourceSansBold
-    titleLabel.Parent = frame
+        local frame = Instance.new("Frame")
+        frame.Size = UDim2.new(0, 300, 0, 100)
+        frame.Position = UDim2.new(0.5, -150, 0, -100)
+        frame.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
+        frame.BorderSizePixel = 0
+        frame.Parent = notificationScreenGui
 
-    local messageLabel = Instance.new("TextLabel")
-    messageLabel.Size = UDim2.new(1, 0, 0.5, 0)
-    messageLabel.Position = UDim2.new(0, 0, 0.5, 0)
-    messageLabel.Text = message
-    messageLabel.TextSize = 14
-    messageLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    messageLabel.BackgroundTransparency = 1
-    messageLabel.Font = Enum.Font.SourceSans
-    messageLabel.Parent = frame
+        local titleLabel = Instance.new("TextLabel")
+        titleLabel.Size = UDim2.new(1, 0, 0.5, 0)
+        titleLabel.Position = UDim2.new(0, 0, 0, 0)
+        titleLabel.Text = title
+        titleLabel.TextSize = 18
+        titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        titleLabel.BackgroundTransparency = 1
+        titleLabel.Font = Enum.Font.SourceSansBold
+        titleLabel.Parent = frame
 
-    -- Tween in animation
-    frame.Position = UDim2.new(0.5, -150, 0, -100)
-    local tweenIn = TweenService:Create(frame, TweenInfo.new(0.5), {
-        Position = UDim2.new(0.5, -150, 0, 20)
-    })
-    tweenIn:Play()
+        local messageLabel = Instance.new("TextLabel")
+        messageLabel.Size = UDim2.new(1, 0, 0.5, 0)
+        messageLabel.Position = UDim2.new(0, 0, 0.5, 0)
+        messageLabel.Text = message
+        messageLabel.TextSize = 14
+        messageLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        messageLabel.BackgroundTransparency = 1
+        messageLabel.Font = Enum.Font.SourceSans
+        messageLabel.Parent = frame
 
-    coroutine.wrap(function()
-        wait(duration or 5)
+        -- Get the name of the game
+        local gameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+        title = gameName .. " - " .. title
+        titleLabel.Text = title
 
-        -- Tween out animation
-        local tweenOut = TweenService:Create(frame, TweenInfo.new(0.5), {
-            Position = UDim2.new(0.5, -150, 0, -100)
+        -- Tween in animation
+        frame.Position = UDim2.new(0.5, -150, 0, -100)
+        local tweenIn = TweenService:Create(frame, TweenInfo.new(0.5), {
+            Position = UDim2.new(0.5, -150, 0, 20)
         })
-        tweenOut:Play()
-        tweenOut.Completed:Wait()
+        tweenIn:Play()
 
-        notificationScreenGui:Destroy()
-    end)()
+        coroutine.wrap(function()
+            wait(duration or 5)
 
-    return notificationScreenGui
+            -- Tween out animation
+            local tweenOut = TweenService:Create(frame, TweenInfo.new(0.5), {
+                Position = UDim2.new(0.5, -150, 0, -100)
+            })
+            tweenOut:Play()
+            tweenOut.Completed:Wait()
+
+            notificationScreenGui:Destroy()
+        end)()
+
+        return notificationScreenGui
+    end
+
+    return NotificationLibrary
 end
+
+
+end
+
